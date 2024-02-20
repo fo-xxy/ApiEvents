@@ -1,6 +1,6 @@
 import {getConnection} from "./../Database/database";
 
-//Método que lista todos los eventos
+//Método que lista todos los usuarios
 const getUsers = async (req, res) => {
     try {
        const connection= await getConnection();
@@ -12,7 +12,7 @@ const getUsers = async (req, res) => {
     }  
 };
 
-//Método que agrega nuevos eventos
+//Método que agrega nuevos usuarios
 const addUsers = async (req, res) =>{
     try {
 
@@ -96,7 +96,7 @@ const updateUser =async (req, res) => {
     }  
 };
 
-//Método que elimina un evento
+//Método que elimina un usuario
 const deleteUser =async (req, res) => {
     try {
         const {idUser} = req.params;

@@ -15,8 +15,8 @@ app.set("port", 3000);
 app.use(morgan("dev"));
 app.use(express.json());
 //
-app.use("/", eventsRoutes);
-app.use("/api/user/", usersRoutes);
+app.use("/api/events/", eventsRoutes);
+app.use("/api/users/", usersRoutes);
 //Se exporta la app, para utilizarla externamente
 export default app;
 
