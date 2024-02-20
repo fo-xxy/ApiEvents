@@ -3,6 +3,7 @@ import morgan from "morgan";
 
 //Importamos las rutas
 import eventsRoutes from "./Routes/events.routes";
+import usersRoutes from "./Routes/users.routes";
 
 //Express es un framework para crear servidor web que maneje rutas
 const app =express();
@@ -15,6 +16,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 //
 app.use("/", eventsRoutes);
+app.use("/api/user/", usersRoutes);
 //Se exporta la app, para utilizarla externamente
 export default app;
 
