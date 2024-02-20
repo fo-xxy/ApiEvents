@@ -12,9 +12,9 @@ app.set("port", 3000);
 //Middlewares, intermediarios en una petición y una respuesta
 //Se usará en modod de desrrollo, en la comsola se verá un detalle de las peticiones que hacemos
 app.use(morgan("dev"));
-
+app.use(express.json());
 //
-app.use("/api/events", eventsRoutes);
+app.use("/", eventsRoutes);
 //Se exporta la app, para utilizarla externamente
 export default app;
 
