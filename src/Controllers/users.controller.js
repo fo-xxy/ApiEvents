@@ -131,5 +131,4 @@ export const methods = {
     getUser,
     updateUser,
     deleteUser
-    
 };
