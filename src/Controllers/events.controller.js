@@ -16,11 +16,11 @@ const getEvents = async (req, res) => {
 const addEvents = async (req, res) =>{
     try {
 
-        const {nameEvent, dateEvent, capacity} = req.body;
+        const {nameEvent, dateEvent, capacity, idUser} = req.body;
 
         console.log(req.body);
 
-        if(nameEvent == "" || dateEvent == "" || capacity == ""){
+        if(nameEvent == "" || dateEvent == "" || capacity == "" || idUser == ""){
             res.status(400).json({message: "Debes llenar todos los campos."})
             return;
         }
@@ -28,11 +28,23 @@ const addEvents = async (req, res) =>{
         const objEvent = {
             nameEvent,
             dateEvent,
-            capacity
+            capacity,
+            idUser
         };
 
         const connection = await getConnection();
         const result = await connection.query("INSERT INTO tbl_events SET ?",objEvent);
+
+        const lastInsertId = await connection.query("SELECT LAST_INSERT_ID() AS lastInsertId");
+        console.log(lastInsertId[0].lastInsertId);
+
+        const objEventUser ={
+            idEvent: lastInsertId[0].lastInsertId,
+            idUser: idUser
+        }
+
+        const resultUser = await connection.query("INSERT INTO tbl_assistance SET ?",objEventUser);
+
 
         res.json({message:"Evento agregado correctamente."});
         
@@ -67,9 +79,9 @@ const getEvent =async (req, res) => {
 const updateEvent =async (req, res) => {
     try {
         const {idEvent} = req.params;
-        const {nameEvent, dateEvent, capacity} = req.body;
+        const {nameEvent, dateEvent, capacity, idUser} = req.body;
 
-        if(nameEvent == "" || dateEvent == "" || capacity == ""){
+        if(nameEvent == "" || dateEvent == "" || capacity == "" || idUser == ""){
             res.status(400).json({message: "Debes llenar todos los campos."})
             return;
         }
@@ -77,7 +89,8 @@ const updateEvent =async (req, res) => {
         const objEvent = {
             nameEvent,
             dateEvent,
-            capacity
+            capacity,
+            idUser
         };
 
        const connection= await getConnection();
@@ -102,15 +115,24 @@ const deleteEvent =async (req, res) => {
         const {idEvent} = req.params;
 
        const connection= await getConnection();
-       const result = await connection.query("DELETE FROM tbl_events WHERE idEvent = ?", idEvent);
 
-       if (result.affectedRows === 0) {
+       const consultEventUser = await connection.query("DELETE FROM tbl_assistance WHERE idEvent = ?", idEvent);
+
+        if(consultEventUser.affectedRows > 0){
+            const result = await connection.query("DELETE FROM tbl_events WHERE idEvent = ?", idEvent);
+
+            if(result.affectedRows > 0){
+            res.status(200).json({ message: "Evento eliminado correctamente." });
+            }
+            else{
+            res.status(200).json({ message: "No se encontraron datos para eliminar." });
+            return;
+            }
+       }
+       else{
         res.status(200).json({ message: "No se encontraron datos para eliminar." });
         return;
-    }
-
-    res.status(200).json({ message: "Evento eliminado correctamente." });
-       
+       } 
     } catch (error) {
        res.status(500);
        res.send(error.message);

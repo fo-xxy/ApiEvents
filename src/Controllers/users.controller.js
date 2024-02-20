@@ -34,7 +34,7 @@ const addUsers = async (req, res) =>{
         const connection = await getConnection();
         const result = await connection.query("INSERT INTO tbl_users SET ?", objUser);
 
-        res.json({message:"Evento agregado correctamente."});
+        res.json({message:"Usuario agregado correctamente."});
         
     } catch (error) {
         res.status(500);
@@ -43,7 +43,7 @@ const addUsers = async (req, res) =>{
 };
 
 //Método que busca un evento por el id
-const getEvent =async (req, res) => {
+const getUser =async (req, res) => {
     try {
         const {idUser} = req.params;
 
@@ -102,6 +102,14 @@ const deleteUser =async (req, res) => {
         const {idUser} = req.params;
 
        const connection= await getConnection();
+
+       const consultUSerEvent = await connection.query("SELECT * FROM tbl_events WHERE idUser = ?", idUser);
+
+       if(consultUSerEvent != ""){
+        res.status(200).json({ message: "No se puede eliminar este usuario, porque cuenta con eventos pendientes." });
+        return;
+       }
+
        const result = await connection.query("DELETE FROM tbl_users WHERE idUser = ?", idUser);
 
        if (result.affectedRows === 0) {
@@ -109,7 +117,7 @@ const deleteUser =async (req, res) => {
         return;
     }
 
-    res.status(200).json({ message: "Evento eliminado correctamente." });
+    res.status(200).json({ message: "Usuario eliminado correctamente." });
        
     } catch (error) {
        res.status(500);
@@ -120,7 +128,7 @@ const deleteUser =async (req, res) => {
 export const methods = {
     getUsers,
     addUsers,
-    getEvent,
+    getUser,
     updateUser,
     deleteUser
     
