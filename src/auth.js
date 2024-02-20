@@ -17,6 +17,8 @@ const verifyToken = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).json({ error: 'No estas autorizado a realizar esta acción.' });
+
+    
   }
 };
 
