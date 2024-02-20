@@ -11,5 +11,7 @@ router.get("/:idEvent", verific.verifyToken, eventsController.getEvent);
 router.put("/:idEvent", verific.verifyToken, eventsController.updateEvent);
 router.delete("/:idEvent", verific.verifyToken, eventsController.deleteEvent);
 
+router.get("/api/inf/", eventsController.getDateEvents);
+
 //Exporta las funciones
 export default router;

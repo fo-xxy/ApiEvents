@@ -138,12 +138,51 @@ const deleteEvent =async (req, res) => {
        res.send(error.message);
     }  
 };
+
+const getDateEvents = async (req, res) =>{
+    try {
+        const connection= await getConnection();
+        const [rows] = await connection.query("SELECT * FROM tbl_events");
+
+        let events = [];
+
+        if (Array.isArray(rows)) {
+            events = rows.map(row => ({
+              id: row.id,
+              name: row.name,
+              date: row.date
+            }));
+          } else {
+            events = [rows];
+          }
+        const asistenciaPorDia = {};
+
+        for(const event of events){
+            const [rows] = await connection.query('SELECT COUNT(*) AS count FROM tbl_assistance WHERE idEvent = ?', [event.id]);
+            const count = rows[0].count;
+
+            const dayOfWeek = moment(event.date).format('dddd');
+    if (!asistenciaPorDia[dayOfWeek]) {
+        asistenciaPorDia[dayOfWeek] = 0;
+    }
+    asistenciaPorDia[dayOfWeek] += count;
+  }
+
+    res.json(attendeesByDayOfWeek);
+        
+
+     } catch (error) {
+        res.status(500);
+        res.send(error.message);
+     }  
+};
    
 export const methods = {
     getEvents,
     addEvents,
     getEvent,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    getDateEvents
     
 };
